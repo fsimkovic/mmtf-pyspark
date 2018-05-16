@@ -52,6 +52,11 @@ try:
 except ImportError:
     raise ImportError("Error: sphinx_bootstrap_theme must be installed before generating this documentation")
 
+try:
+    import mmtfPyspark
+except ImportError:
+    raise ImportError("Error: mmtfPyspark must be installed before generating this documentation")
+
 # Include the following directories in docs by copying them over --- only works for one up
 include_directories = [
     '../demos',

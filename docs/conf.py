@@ -16,8 +16,9 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
+
 import os
+import shutil
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -44,14 +45,23 @@ extensions = [
 try:
     import numpydoc
 except ImportError:
-    msg = "Error: numpydoc must be installed before generating this documentation"
-    raise ImportError(msg)
+    raise ImportError("Error: numpydoc must be installed before generating this documentation")
 
 try:
     import sphinx_bootstrap_theme
 except ImportError:
-    msg = "Error: sphinx_bootstrap_thememust be installed before generating this documentation"
-    raise ImportError(msg)
+    raise ImportError("Error: sphinx_bootstrap_theme must be installed before generating this documentation")
+
+# Include the following directories in docs by copying them over --- only works for one up
+include_directories = [
+    '../demos',
+]
+for directory in include_directories:
+    assert os.path.isfile(directory), "Cannot find directory %s" % directory
+    clone = directory.replace("..", ".")
+    if os.path.isdir(clone):
+        shutil.rmtree(clone)
+    shutil.copytree(directory, clone)
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -66,7 +76,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'MMTF-PySpark'
 copyright = '2018, UC San Diego'
-author = ''
+author = 'Mars Huang & Felix Simkovic'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -90,7 +100,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -108,9 +118,12 @@ nbsphinx_epilog = """
 
 .. raw:: html
 
+   {% set rawgitbase = 'https://cdn.rawgit.com/sbl-sdsc/mmtf-pyspark/3757cfde' %}
+   {% set rawgiturl = env.doc2path(env.docname, base=rawgitbase) %}
+
    <div class="btn-container">
-       <a class="btn btn-download" role="button" href="{{ env.doc2path(env.docname, base='../../../') }}" download>Download Notebook</a>
-       <a class="btn btn-download" role="button" href="{{ env.doc2path(env.docname, base='../../../') }}.py" download>Download Script</a>
+       <a class="btn btn-download" role="button" href="{{ rawgiturl }} " download>Download Notebook</a>
+       <a class="btn btn-download" role="button" href="{{ rawgiturl }}.py" download>Download Script</a>
    </div>
 
 """

@@ -57,7 +57,7 @@ include_directories = [
     '../demos',
 ]
 for directory in include_directories:
-    assert os.path.isfile(directory), "Cannot find directory %s" % directory
+    assert os.path.isdir(directory), "Cannot find directory %s" % directory
     clone = directory.replace("..", ".")
     if os.path.isdir(clone):
         shutil.rmtree(clone)
